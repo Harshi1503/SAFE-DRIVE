@@ -51,8 +51,7 @@ while(True):
         if(rpred[0] == 0):
             lbl = 'Closed'
         break
-
-    for (x,y,w,h) in left_eye:
+ for (x,y,w,h) in left_eye:
         l_eye = frame[y:y+h,x:x+w]
         count = count+1
         l_eye = cv2.cvtColor(l_eye,cv2.COLOR_BGR2GRAY)  
@@ -66,3 +65,36 @@ while(True):
         if(lpred[0] == 0):
             lbl ='Closed'
         break
+
+    if(rpred[0] == 0 or lpred[0] == 0):
+        score = score + 1
+        cv2.putText(frame,"Closed",(10,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
+    else:
+        score=score-1
+        cv2.putText(frame,"Open",(10,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
+    
+        
+    if(score < 0):
+        score = 0   
+    cv2.putText(frame,'Score:'+str(score),(100,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
+    if(score > 15):
+        cv2.imwrite(os.path.join(path,'image.jpg'),frame)
+        try:
+            sound.play()
+            
+        except:  
+            pass
+        if(thicc < 16):
+            thicc = thicc + 2
+        else:
+            thicc = thicc - 2
+            if(thicc < 2):
+                thicc = 2
+        cv2.rectangle(frame,(0,0),(width,height),(0,0,255),thicc) 
+    cv2.imshow('frame',frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
+
+    
